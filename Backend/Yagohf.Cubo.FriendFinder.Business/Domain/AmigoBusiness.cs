@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Yagohf.Cubo.FriendFinder.Business.Interface.Domain;
 using Yagohf.Cubo.FriendFinder.Data.Interface.Query;
@@ -13,20 +14,33 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
 {
     public class AmigoBusiness : IAmigoBusiness
     {
+        private readonly ICalculadoraDistanciaPontosBusiness _calculadoraDistanciaPontosBusiness;
         private readonly IAmigoRepository _amigoRepository;
         private readonly IAmigoQuery _amigoQuery;
         private readonly IMapper _mapper;
 
-        public AmigoBusiness(IAmigoRepository amigoRepository, IAmigoQuery amigoQuery, IMapper mapper)
+        public AmigoBusiness(ICalculadoraDistanciaPontosBusiness calculadoraDistanciaPontosBusiness, IAmigoRepository amigoRepository, IAmigoQuery amigoQuery, IMapper mapper)
         {
+            this._calculadoraDistanciaPontosBusiness = calculadoraDistanciaPontosBusiness;
             this._amigoRepository = amigoRepository;
             this._amigoQuery = amigoQuery;
             this._mapper = mapper;
         }
 
-        public Task<AmigosProximosDTO> ListarAmigosProximosPorUsuarioAsync(string usuario, int amigoReferencia)
+        public async Task<AmigosProximosDTO> ListarAmigosProximosPorUsuarioAsync(string usuario, int amigoReferencia)
         {
-            throw new NotImplementedException();
+            IEnumerable<Amigo> amigos = await this._amigoRepository.ListarAsync(this._amigoQuery.PorUsuario(usuario));
+            Amigo amigoAtual = amigos.Single(x => x.Id == amigoReferencia);
+
+            IEnumerable<Amigo> amigosProximos = amigos.Where(x => x.Id != amigoAtual.Id)
+                .OrderBy(x => this._calculadoraDistanciaPontosBusiness.Calcular(new PontoDTO(x.Latitude, x.Longitude), new PontoDTO(amigoAtual.Latitude, amigoAtual.Longitude)))
+                .Take(3);
+
+            return new AmigosProximosDTO()
+            {
+                PosicaoAtual = this._mapper.Map<AmigoDTO>(amigoAtual),
+                AmigosProximos = amigosProximos.Mapear<Amigo, AmigoDTO>(this._mapper)
+            };
         }
 
         public async Task<Listagem<AmigoDTO>> ListarPorUsuarioAsync(string usuario, int? pagina)

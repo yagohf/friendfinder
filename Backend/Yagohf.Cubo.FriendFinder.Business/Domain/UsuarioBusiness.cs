@@ -30,7 +30,7 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
         public async Task<UsuarioDTO> SelecionarPorIdAsync(int id)
         {
             Usuario usuario = await this._usuarioRepository.SelecionarUnicoAsync(this._usuarioQuery.PorId(id));
-            return _mapper.Map<UsuarioDTO>(usuario);
+            return this._mapper.Map<UsuarioDTO>(usuario);
         }
     }
 }

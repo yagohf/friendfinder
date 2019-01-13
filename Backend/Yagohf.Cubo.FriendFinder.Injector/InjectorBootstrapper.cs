@@ -36,6 +36,7 @@ namespace Yagohf.Cubo.FriendFinder.Injector
             //Business
             services.AddScoped<IUsuarioBusiness, UsuarioBusiness>();
             services.AddScoped<IAmigoBusiness, AmigoBusiness>();
+            services.AddScoped<ICalculadoraDistanciaPontosBusiness, CalculadoraDistanciaPontosBusiness>();
 
             //Automapper.
             MapperConfiguration mapperConfiguration = new MapperConfiguration(mConfig =>
