@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Yagohf.Cubo.FriendFinder.Infrastructure\Yagohf.Cubo.FriendFinder.Infrastructure.csproj" />
+    <ProjectReference Include="..\Yagohf.Cubo.FriendFinder.Model\Yagohf.Cubo.FriendFinder.Model.csproj" />
+  </ItemGroup>
+
+</Project>
