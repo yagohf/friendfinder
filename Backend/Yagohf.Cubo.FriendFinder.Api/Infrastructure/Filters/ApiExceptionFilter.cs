@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using Yagohf.Cubo.FriendFinder.Infrastructure.Exception;
 
 namespace Yagohf.Cubo.FriendFinder.Api.Infrastructure.Filters
 {
@@ -15,12 +16,21 @@ namespace Yagohf.Cubo.FriendFinder.Api.Infrastructure.Filters
 
         public void OnException(ExceptionContext context)
         {
-            this._logger.LogError(context.Exception, context.Exception.Message);
-            context.ExceptionHandled = true;
+            if (context.Exception is BusinessException)
+            {
+                JsonResult jsonResult = new JsonResult(context.Exception.Message);
+                jsonResult.StatusCode = 400; //BadRequest - erros tratados.
+                context.Result = jsonResult;
+            }
+            else
+            {
+                this._logger.LogError(context.Exception, context.Exception.Message);
+                context.ExceptionHandled = true;
 
-            JsonResult jsonResult = new JsonResult("Ocorreu um erro interno ao processar a solicitação.");
-            jsonResult.StatusCode = 500; //InternalServerError - qualquer erro não tratado.
-            context.Result = jsonResult;
+                JsonResult jsonResult = new JsonResult("Ocorreu um erro interno ao processar a solicitação.");
+                jsonResult.StatusCode = 500; //InternalServerError - qualquer erro não tratado.
+                context.Result = jsonResult;
+            }
         }
     }
 }

@@ -1,13 +1,17 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Yagohf.Cubo.FriendFinder.Api.Infrastructure.Filters;
+using Yagohf.Cubo.FriendFinder.Infrastructure.Configuration;
 using Yagohf.Cubo.FriendFinder.Injector.Extensions;
 
 namespace Yagohf.Cubo.FriendFinder.Api
@@ -24,16 +28,14 @@ namespace Yagohf.Cubo.FriendFinder.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //Swagger.
-            services.AddSwaggerGen(cfg =>
+            //Adicionar suporte a CORS (Cross-Origin Resource Sharing).
+            services.AddCors(corsOptions =>
             {
-                cfg.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info()
-                {
-                    Title = "FriendFinder API",
-                    Version = "v1",
-                    Description = "API da aplicação FriendFinder, utilizada para encontrar amigos próximos a um determinado ponto."
-                });
-                cfg.IncludeXmlComments(MontarPathArquivoXmlSwagger());
+                corsOptions.AddPolicy("CorsPolicy",
+                   builder => builder.AllowAnyOrigin()
+                              .AllowAnyMethod()
+                              .AllowAnyHeader()
+                              .AllowCredentials());
             });
 
             services.AddMvc(config =>
@@ -45,14 +47,41 @@ namespace Yagohf.Cubo.FriendFinder.Api
             //Adicionar injeção de dependência delegada para outra camada.
             services.AddInjectorBootstrapper(this.Configuration);
 
-            //Adicionar suporte a CORS (Cross-Origin Resource Sharing).
-            services.AddCors(corsOptions =>
+            //Setar configurações fortemente tipadas.
+            var autenticacaoSection = Configuration.GetSection("Autenticacao");
+            services.Configure<Autenticacao>(autenticacaoSection);
+
+            //Configurar autenticação com JWT.
+            Autenticacao configuracoesAutenticacao = autenticacaoSection.Get<Autenticacao>();
+            byte[] chaveCriptografia = Encoding.ASCII.GetBytes(configuracoesAutenticacao.ChaveCriptografia);
+            services.AddAuthentication(x =>
             {
-                corsOptions.AddPolicy("CorsPolicy",
-                   builder => builder.AllowAnyOrigin()
-                              .AllowAnyMethod()
-                              .AllowAnyHeader()
-                              .AllowCredentials());
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = true;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(chaveCriptografia),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+            //Swagger.
+            services.AddSwaggerGen(cfg =>
+            {
+                cfg.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info()
+                {
+                    Title = "FriendFinder API",
+                    Version = "v1",
+                    Description = "API da aplicação FriendFinder, utilizada para encontrar amigos próximos a um determinado ponto."
+                });
+                cfg.IncludeXmlComments(MontarPathArquivoXmlSwagger());
             });
         }
 
@@ -63,6 +92,8 @@ namespace Yagohf.Cubo.FriendFinder.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseAuthentication();
 
             app.UseMvc();
 

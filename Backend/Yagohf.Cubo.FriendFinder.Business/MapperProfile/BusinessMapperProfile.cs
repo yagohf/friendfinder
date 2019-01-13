@@ -23,7 +23,8 @@ namespace Yagohf.Cubo.FriendFinder.Business.MapperProfile
 
         private void MapearDTOsParaEntidades()
         {
-            CreateMap<AmigoDTO, Amigo>();
+            CreateMap<AmigoRegistrarDTO, Amigo>();
+            CreateMap<RegistroDTO, Usuario>();
         }
     }
 }

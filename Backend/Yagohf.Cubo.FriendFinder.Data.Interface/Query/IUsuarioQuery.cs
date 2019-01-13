@@ -5,6 +5,7 @@ namespace Yagohf.Cubo.FriendFinder.Data.Interface.Query
     public interface IUsuarioQuery
     {
         IQuery<Usuario> PorId(int id);
+        IQuery<Usuario> PorUsuario(string usuario);
         IQuery<Usuario> PorUsuarioSenha(string usuario, string senha);
     }
 }

@@ -5,6 +5,12 @@ namespace Yagohf.Cubo.FriendFinder.Data.Query
 {
     public class AmigoQuery : IAmigoQuery
     {
+        public IQuery<Amigo> PorId(int id)
+        {
+            return new Query<Amigo>()
+              .Filtrar(x => x.Id == id);
+        }
+
         public IQuery<Amigo> PorUsuario(string usuario)
         {
             return new Query<Amigo>()

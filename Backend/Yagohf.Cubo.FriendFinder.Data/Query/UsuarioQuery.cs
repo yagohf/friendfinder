@@ -11,6 +11,12 @@ namespace Yagohf.Cubo.FriendFinder.Data.Query
                  .Filtrar(x => x.Id == id);
         }
 
+        public IQuery<Usuario> PorUsuario(string usuario)
+        {
+            return new Query<Usuario>()
+                .Filtrar(x => x.Login == usuario);
+        }
+
         public IQuery<Usuario> PorUsuarioSenha(string usuario, string senha)
         {
             return new Query<Usuario>()

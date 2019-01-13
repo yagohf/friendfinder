@@ -3,13 +3,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Yagohf.Cubo.FriendFinder.Business.Domain;
+using Yagohf.Cubo.FriendFinder.Business.Helper;
 using Yagohf.Cubo.FriendFinder.Business.Interface.Domain;
+using Yagohf.Cubo.FriendFinder.Business.Interface.Helper;
 using Yagohf.Cubo.FriendFinder.Business.MapperProfile;
 using Yagohf.Cubo.FriendFinder.Data.Context;
 using Yagohf.Cubo.FriendFinder.Data.Interface.Query;
 using Yagohf.Cubo.FriendFinder.Data.Interface.Repository;
 using Yagohf.Cubo.FriendFinder.Data.Query;
 using Yagohf.Cubo.FriendFinder.Data.Repository;
+using Yagohf.Cubo.FriendFinder.Infrastructure.Configuration;
 
 namespace Yagohf.Cubo.FriendFinder.Injector
 {
@@ -33,12 +36,15 @@ namespace Yagohf.Cubo.FriendFinder.Injector
             services.AddScoped<IUsuarioQuery, UsuarioQuery>();
             services.AddScoped<IAmigoQuery, AmigoQuery>();
 
-            //Business
+            //Business - Helper
+            services.AddScoped<ITokenHelper, TokenHelper>();
+
+            //Business - Domain
             services.AddScoped<IUsuarioBusiness, UsuarioBusiness>();
             services.AddScoped<IAmigoBusiness, AmigoBusiness>();
             services.AddScoped<ICalculadoraDistanciaPontosBusiness, CalculadoraDistanciaPontosBusiness>();
 
-            //Automapper.
+            //Automapper
             MapperConfiguration mapperConfiguration = new MapperConfiguration(mConfig =>
             {
                 mConfig.AddProfile(new BusinessMapperProfile());

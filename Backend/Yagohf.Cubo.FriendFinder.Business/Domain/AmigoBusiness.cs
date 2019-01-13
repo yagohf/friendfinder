@@ -16,15 +16,28 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
     {
         private readonly ICalculadoraDistanciaPontosBusiness _calculadoraDistanciaPontosBusiness;
         private readonly IAmigoRepository _amigoRepository;
+        private readonly IUsuarioRepository _usuarioRepository;
         private readonly IAmigoQuery _amigoQuery;
+        private readonly IUsuarioQuery _usuarioQuery;
         private readonly IMapper _mapper;
 
-        public AmigoBusiness(ICalculadoraDistanciaPontosBusiness calculadoraDistanciaPontosBusiness, IAmigoRepository amigoRepository, IAmigoQuery amigoQuery, IMapper mapper)
+        public AmigoBusiness(ICalculadoraDistanciaPontosBusiness calculadoraDistanciaPontosBusiness, IAmigoRepository amigoRepository, IUsuarioRepository usuarioRepository, IAmigoQuery amigoQuery, IUsuarioQuery usuarioQuery, IMapper mapper)
         {
             this._calculadoraDistanciaPontosBusiness = calculadoraDistanciaPontosBusiness;
             this._amigoRepository = amigoRepository;
+            this._usuarioRepository = usuarioRepository;
             this._amigoQuery = amigoQuery;
+            this._usuarioQuery = usuarioQuery;
             this._mapper = mapper;
+        }
+
+        public async Task<AmigoDTO> CriarAsync(string usuario, AmigoRegistrarDTO amigo)
+        {
+            Usuario usuarioRelacionar = await this._usuarioRepository.SelecionarUnicoAsync(this._usuarioQuery.PorUsuario(usuario));
+            Amigo amigoCriar = this._mapper.Map<Amigo>(amigo);
+            amigoCriar.IdUsuario = usuarioRelacionar.Id;
+            await this._amigoRepository.InserirAsync(amigoCriar);
+            return this._mapper.Map<AmigoDTO>(amigoCriar);
         }
 
         public async Task<AmigosProximosDTO> ListarAmigosProximosPorUsuarioAsync(string usuario, int amigoReferencia)
@@ -38,8 +51,8 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
 
             return new AmigosProximosDTO()
             {
-                PosicaoAtual = this._mapper.Map<AmigoDTO>(amigoAtual),
-                AmigosProximos = amigosProximos.Mapear<Amigo, AmigoDTO>(this._mapper)
+                Atual = this._mapper.Map<AmigoDTO>(amigoAtual),
+                Proximos = amigosProximos.Mapear<Amigo, AmigoDTO>(this._mapper)
             };
         }
 
@@ -56,6 +69,12 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
             }
 
             return listagem.Mapear<Amigo, AmigoDTO>(this._mapper);
+        }
+
+        public async Task<AmigoDTO> SelecionarPorIdAsync(int id)
+        {
+            Amigo amigo = await this._amigoRepository.SelecionarUnicoAsync(this._amigoQuery.PorId(id));
+            return this._mapper.Map<AmigoDTO>(amigo);
         }
     }
 }
