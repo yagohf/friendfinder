@@ -43,16 +43,20 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
         public async Task<AmigosProximosDTO> ListarAmigosProximosPorUsuarioAsync(string usuario, int amigoReferencia)
         {
             IEnumerable<Amigo> amigos = await this._amigoRepository.ListarAsync(this._amigoQuery.PorUsuario(usuario));
-            Amigo amigoAtual = amigos.Single(x => x.Id == amigoReferencia);
+            Amigo amigoAtual = amigos.SingleOrDefault(x => x.Id == amigoReferencia);
+            IEnumerable<Amigo> amigosMaisProximos = null;
 
-            IEnumerable<Amigo> amigosProximos = amigos.Where(x => x.Id != amigoAtual.Id)
-                .OrderBy(x => this._calculadoraDistanciaPontosBusiness.Calcular(new PontoDTO(x.Latitude, x.Longitude), new PontoDTO(amigoAtual.Latitude, amigoAtual.Longitude)))
-                .Take(3);
+            if (amigoAtual != null && amigos.Any(x => x.Id != amigoAtual.Id))
+            {
+                amigosMaisProximos = amigos.Where(x => x.Id != amigoAtual.Id)
+                    .OrderBy(x => this._calculadoraDistanciaPontosBusiness.Calcular(new PontoDTO(x.Latitude, x.Longitude), new PontoDTO(amigoAtual.Latitude, amigoAtual.Longitude)))
+                    .Take(3);
+            }
 
             return new AmigosProximosDTO()
             {
-                Atual = this._mapper.Map<AmigoDTO>(amigoAtual),
-                Proximos = amigosProximos.Mapear<Amigo, AmigoDTO>(this._mapper)
+                Atual = amigoAtual == null ? null : this._mapper.Map<AmigoDTO>(amigoAtual),
+                Proximos = amigosMaisProximos?.Mapear<Amigo, AmigoDTO>(this._mapper)
             };
         }
 

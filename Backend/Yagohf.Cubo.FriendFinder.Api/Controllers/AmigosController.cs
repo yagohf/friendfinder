@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Threading.Tasks;
+using Yagohf.Cubo.FriendFinder.Api.Infrastructure.Extensions;
 using Yagohf.Cubo.FriendFinder.Business.Interface.Domain;
 using Yagohf.Cubo.FriendFinder.Infrastructure.Paging;
 using Yagohf.Cubo.FriendFinder.Model.DTO;
@@ -28,9 +29,7 @@ namespace Yagohf.Cubo.FriendFinder.Api.Controllers
         [SwaggerResponse(401)]
         public async Task<IActionResult> Get(int? pagina)
         {
-            //TODO - recuperar usuário logado.
-            string usuario = "yagohf";
-            return Ok(await this._amigoBusiness.ListarPorUsuarioAsync(usuario, pagina));
+            return Ok(await this._amigoBusiness.ListarPorUsuarioAsync(this.ObterUsuarioLogado(), pagina));
         }
 
         /// <summary>
@@ -54,9 +53,7 @@ namespace Yagohf.Cubo.FriendFinder.Api.Controllers
         [SwaggerResponse(401)]
         public async Task<IActionResult> GetAmigosProximos(int amigo)
         {
-            //TODO - recuperar usuário logado.
-            string usuario = "yagohf";
-            return Ok(await this._amigoBusiness.ListarAmigosProximosPorUsuarioAsync(usuario, amigo));
+            return Ok(await this._amigoBusiness.ListarAmigosProximosPorUsuarioAsync(this.ObterUsuarioLogado(), amigo));
         }
 
         /// <summary>
@@ -68,9 +65,7 @@ namespace Yagohf.Cubo.FriendFinder.Api.Controllers
         [SwaggerResponse(201, typeof(UsuarioDTO))]
         public async Task<IActionResult> Post([FromBody]AmigoRegistrarDTO model)
         {
-            //TODO - recuperar usuário logado.
-            string usuario = "yagohf";
-            AmigoDTO amigoCriado = await this._amigoBusiness.CriarAsync(usuario, model);
+            AmigoDTO amigoCriado = await this._amigoBusiness.CriarAsync(this.ObterUsuarioLogado(), model);
             return CreatedAtAction(nameof(Get), new { id = amigoCriado.Id }, amigoCriado);
         }
     }
