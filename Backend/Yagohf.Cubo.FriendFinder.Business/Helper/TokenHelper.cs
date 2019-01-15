@@ -19,7 +19,7 @@ namespace Yagohf.Cubo.FriendFinder.Business.Helper
             this._configuracoesAutenticacao = configuracoesAutenticacao;
         }
 
-        public TokenDTO Gerar(string usuario)
+        public TokenDTO Gerar(string usuario, string nome)
         {
             JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
             byte[] key = Encoding.ASCII.GetBytes(this._configuracoesAutenticacao.Value.ChaveCriptografia);
@@ -36,7 +36,8 @@ namespace Yagohf.Cubo.FriendFinder.Business.Helper
             SecurityToken securityToken = tokenHandler.CreateToken(tokenDescriptor);
             return new TokenDTO()
             {
-                Nome = usuario,
+                Nome = nome,
+                Login = usuario,
                 Token = tokenHandler.WriteToken(securityToken)
             };
         }

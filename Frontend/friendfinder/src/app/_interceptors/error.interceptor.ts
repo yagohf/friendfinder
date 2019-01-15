@@ -17,9 +17,12 @@ export class ErrorInterceptor implements HttpInterceptor {
                 //Se o servidor retornar 401, automaticamente forçar o logout e recarregar a URL.
                 this.authenticationService.logout();
                 location.reload(true);
-            } 
-            else if(err.status === 0) {
+            }
+            else if (err.status === 0) {
                 this.mensagemService.enviarMensagem('Ops... Estamos com uma indisponibilidade em nossos serviços. Por favor, tente novamente dentro de alguns instantes.', EnumMensagem.ERRO);
+            }
+            else if (err.status === 400) {
+                this.mensagemService.enviarMensagem(err.error, EnumMensagem.ERRO);
             }
             else if (err.status === 500) {
                 this.mensagemService.enviarMensagem('Ops... Parece que ocorreu um problema ao processar sua solicitação. Por favor, tente novamente.', EnumMensagem.ERRO);

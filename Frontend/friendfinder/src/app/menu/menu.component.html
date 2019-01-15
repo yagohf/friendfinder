@@ -1,0 +1,36 @@
+<nav class="navbar navbar-default navbar-fixed-top" *ngIf="(infosUsuarioLogado$ | async)?.autenticado">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" (click)="isCollapsed = !isCollapsed" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" routerLink="/">
+        <i class="fa fa fa-users"></i> FriendFinder
+      </a>
+    </div>
+    <div class="collapse navbar-collapse" [collapse]="isCollapsed">
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a routerLink="/amigos">
+            <span class="fa fa-users"></span>
+            Amigos</a>
+        </li>
+        <li class="nav-item dropdown" dropdown>
+          <a class="nav-link dropdown-toggle" href dropdownToggle (click)="false" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false">
+            <i class="fa fa-user"></i> {{ (infosUsuarioLogado$ | async)?.login}}
+          </a>
+          <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+            <li role="menuitem">
+              <a class="dropdown-item" (click)="logoff()">
+                <i class="fa fa-power-off"></i> Sair
+              </a>
+            </li>
+          </ul>
+      </ul>
+    </div>
+  </div>
+</nav>

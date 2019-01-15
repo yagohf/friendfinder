@@ -82,7 +82,7 @@ namespace Yagohf.Cubo.FriendFinder.Api
                     Description = "API da aplicação FriendFinder, utilizada para encontrar amigos próximos a um determinado ponto."
                 });
                 cfg.IncludeXmlComments(MontarPathArquivoXmlSwagger());
-            });
+            });           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,6 +94,8 @@ namespace Yagohf.Cubo.FriendFinder.Api
             }
 
             app.UseAuthentication();
+
+            app.UseCors("CorsPolicy");
 
             app.UseMvc();
 

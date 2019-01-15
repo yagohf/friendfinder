@@ -31,7 +31,7 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
             if (usuarioExistente == null)
                 throw new BusinessException("Usuário ou senha inválidos");
 
-            return this._tokenHelper.Gerar(usuarioExistente.Login);
+            return this._tokenHelper.Gerar(usuarioExistente.Login, usuarioExistente.Nome);
         }
 
         public async Task<UsuarioDTO> RegistrarAsync(RegistroDTO registro)

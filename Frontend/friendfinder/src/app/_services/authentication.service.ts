@@ -10,7 +10,7 @@ import { Autenticacao } from '../_models/autenticacao';
 export class AuthenticationService {
   constructor(private http: HttpClient) { }
 
-  static USUARIO_DESLOGADO: UsuarioLogado = { autenticado: false, login: null };
+  static USUARIO_DESLOGADO: UsuarioLogado = { autenticado: false, login: null, token: null };
 
   //Observable para expor o status do usuário como logado ou não.
   private usuarioLogado = new BehaviorSubject<UsuarioLogado>(this.obterUsuarioLogado());
@@ -22,9 +22,9 @@ export class AuthenticationService {
     return this.http.post<any>(`${environment.enderecoApi}/usuarios/token`, autenticacao)
       .pipe(map(resultado => {
         //Login com sucesso se o retorno contiver um token.
-        if (resultado && resultado.status == 1 && resultado.token) {
+        if (resultado && resultado.token) {
           //Guardar o token em localstorage para poder manter o usuário logado entre refreshs.
-          localStorage.setItem('usuarioLogado', JSON.stringify(resultado.token));
+          localStorage.setItem('usuarioLogado', JSON.stringify(resultado));
         }
 
         //Enviar mensagem de usuário logado (ou não) para quem quer que esteja observando.
@@ -45,29 +45,14 @@ export class AuthenticationService {
     let u = new UsuarioLogado();
     u.autenticado = false;
     u.login = null;
+    u.token = null;
 
-    if (localStorage.getItem('usuarioLogado')) {
+    var usuarioLocalStorage = localStorage.getItem('usuarioLogado');
+    if (usuarioLocalStorage) {
+      u = JSON.parse(usuarioLocalStorage);
       u.autenticado = true;
-      u.login = this.obterLoginUsuario();
     }
 
     return u;
-  }
-
-  obterLoginUsuario(): string {
-    var token = localStorage.getItem('usuarioLogado');
-    if (!token) {
-      return null;
-    }
-    else {
-      var objetoCorpoJWT = this.obterTokenDecodificado(token);
-      return objetoCorpoJWT['cognito:username'] || null;
-    }
-  }
-
-  private obterTokenDecodificado(token: string): any {
-    var corpoJWT = token.split('.')[1];
-    var objetoCorpoJWT = JSON.parse(window.atob(corpoJWT));
-    return objetoCorpoJWT;
   }
 }

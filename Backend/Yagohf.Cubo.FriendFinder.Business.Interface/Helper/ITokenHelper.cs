@@ -4,6 +4,6 @@ namespace Yagohf.Cubo.FriendFinder.Business.Interface.Helper
 {
     public interface ITokenHelper
     {
-        TokenDTO Gerar(string usuario);
+        TokenDTO Gerar(string usuario, string nome);
     }
 }
