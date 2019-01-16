@@ -1,7 +1,7 @@
 # friendfinder
 Repositório para armazenamento dos artefatos relacionados ao teste técnico solicitado pela empresa [**Cubo - Mentoring , Consultoria e Treinamentos**](http://www.cubotecnologia.com.br/).
 
-Esse projeto consiste em uma aplicação para que seja possível organizar visitas a amigos, baseado na distância em que eles se encontram da sua posição atual.
+Esse projeto consiste em uma aplicação que possibilita organizar visitas a amigos, baseado na distância em que eles se encontram da sua posição atual.
 
 ## Estrutura de pastas
 - A pasta [Backend](./Backend) contém uma API desenvolvida em [ASP.NET Core 2.1](https://docs.microsoft.com/pt-br/aspnet/core/?view=aspnetcore-2.2), utilizando o [Swagger](https://swagger.io/) como ferramenta para documentar API's, e o [Entity Framework](https://docs.microsoft.com/pt-br/ef/core/) como ORM para acesso a um banco [SQL Server](https://docs.microsoft.com/pt-br/sql/sql-server/sql-server-technical-documentation?view=sql-server-2017). O framework de testes unitários utilizado foi o [MSTest](https://docs.microsoft.com/pt-br/dotnet/core/testing/unit-testing-with-mstest). A aplicação foi desenvolvida em camadas totalmente independentes, facilitando assim a elaboração de testes unitários (aproximadamente 80% da aplicação está coberta por testes unitários).
