@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  enderecoApi: 'http://localhost:2043/api/v1'
+  enderecoApi: 'http://friendfinder.us-east-1.elasticbeanstalk.com/api/v1'
 };
