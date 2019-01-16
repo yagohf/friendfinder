@@ -24,7 +24,7 @@ namespace Yagohf.Cubo.FriendFinder.Api.Controllers
         /// <param name="id">Identificador único do usuário.</param>
         [HttpGet("{id}")]
         [SwaggerResponse(200, typeof(UsuarioDTO))]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetPorId(int id)
         {
             return Ok(await this._usuarioBusiness.SelecionarPorIdAsync(id));
         }
@@ -39,7 +39,7 @@ namespace Yagohf.Cubo.FriendFinder.Api.Controllers
         public async Task<IActionResult> Post([FromBody]RegistroDTO model)
         {
             UsuarioDTO usuarioCriado = await this._usuarioBusiness.RegistrarAsync(model);
-            return CreatedAtAction(nameof(Get), new { id = usuarioCriado.Id }, usuarioCriado);
+            return CreatedAtAction(nameof(GetPorId), new { id = usuarioCriado.Id }, usuarioCriado);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace Yagohf.Cubo.FriendFinder.Api.Controllers
         [SwaggerResponse(201, typeof(UsuarioDTO))]
         public async Task<IActionResult> PostAutenticacao([FromBody]AutenticacaoDTO model)
         {
-            TokenDTO token = await this._usuarioBusiness.GerarToken(model);
+            TokenDTO token = await this._usuarioBusiness.GerarTokenAsync(model);
             return Ok(token);
         }
     }

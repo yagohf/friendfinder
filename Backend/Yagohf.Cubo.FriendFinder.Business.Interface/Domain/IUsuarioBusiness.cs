@@ -5,7 +5,7 @@ namespace Yagohf.Cubo.FriendFinder.Business.Interface.Domain
 {
     public interface IUsuarioBusiness
     {
-        Task<TokenDTO> GerarToken(AutenticacaoDTO login);
+        Task<TokenDTO> GerarTokenAsync(AutenticacaoDTO login);
         Task<UsuarioDTO> RegistrarAsync(RegistroDTO registro);
         Task<UsuarioDTO> SelecionarPorIdAsync(int id);
     }

@@ -39,7 +39,7 @@ namespace Yagohf.Cubo.FriendFinder.Api.Controllers
         [HttpGet("{id}")]
         [SwaggerResponse(200, typeof(Listagem<AmigoDTO>))]
         [SwaggerResponse(401)]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> GetPorId(int id)
         {
             return Ok(await this._amigoBusiness.SelecionarPorIdAsync(id));
         }
@@ -66,7 +66,7 @@ namespace Yagohf.Cubo.FriendFinder.Api.Controllers
         public async Task<IActionResult> Post([FromBody]AmigoRegistrarDTO model)
         {
             AmigoDTO amigoCriado = await this._amigoBusiness.CriarAsync(this.ObterUsuarioLogado(), model);
-            return CreatedAtAction(nameof(Get), new { id = amigoCriado.Id }, amigoCriado);
+            return CreatedAtAction(nameof(GetPorId), new { id = amigoCriado.Id }, amigoCriado);
         }
 
         /// <summary>

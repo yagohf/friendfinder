@@ -7,6 +7,7 @@ namespace Yagohf.Cubo.FriendFinder.Data.Interface.Query
 {
     public interface IQuery<T> where T : class
     {
+        string Identificador { get; }
         List<Expression<Func<T, bool>>> Criteria { get; }
         List<Expression<Func<T, object>>> Includes { get; }
         List<string> IncludeStrings { get; }

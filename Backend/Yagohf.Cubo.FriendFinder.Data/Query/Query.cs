@@ -8,6 +8,8 @@ namespace Yagohf.Cubo.FriendFinder.Data.Query
 {
     public class Query<T> : IQuery<T> where T : class
     {
+        public string Identificador { get; private set; }
+
         public List<Expression<Func<T, bool>>> Criteria { get; private set; }
 
         public List<Expression<Func<T, object>>> Includes { get; private set; }
@@ -18,6 +20,7 @@ namespace Yagohf.Cubo.FriendFinder.Data.Query
 
         public Query()
         {
+            this.Identificador = Guid.NewGuid().ToString();
             this.Criteria = new List<Expression<Func<T, bool>>>();
             this.Includes = new List<Expression<Func<T, object>>>();
             this.IncludeStrings = new List<string>();
@@ -56,6 +59,27 @@ namespace Yagohf.Cubo.FriendFinder.Data.Query
         {
             this.OrderBy.Add(new SortExpression<T>(expression, descendente));
             return this;
+        }
+
+        public override bool Equals(object obj)
+        {
+            /*
+             * Foi necessário sobrescrever esse método, adicionando uma comparação
+             * pelo identificador para poder mockar cenários em que o mesmo método
+             * do repositório é chamado em vários lugares dentro do mesmo método de negócio,
+             * sendo necessário retornar um valor diferente via Moq para cada uma
+             * das chamadas.
+             */
+
+            if (obj == null)
+                return false;
+
+            return (obj as Query<T>).Identificador.Equals(this.Identificador, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override int GetHashCode()
+        {
+            return 96025222 + EqualityComparer<string>.Default.GetHashCode(Identificador);
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
             this._mapper = mapper;
         }
 
-        public async Task<TokenDTO> GerarToken(AutenticacaoDTO login)
+        public async Task<TokenDTO> GerarTokenAsync(AutenticacaoDTO login)
         {
             if (string.IsNullOrEmpty(login.Login) || string.IsNullOrEmpty(login.Senha))
                 throw new BusinessException("Usuário ou senha inválidos");
@@ -41,7 +41,10 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
         public async Task<UsuarioDTO> RegistrarAsync(RegistroDTO registro)
         {
             Usuario novoUsuario = this._mapper.Map<Usuario>(registro);
-            if (await this._usuarioRepository.ExisteAsync(this._usuarioQuery.PorUsuario(registro.Login)))
+
+            if (string.IsNullOrEmpty(registro.Login) || string.IsNullOrEmpty(registro.Senha) || string.IsNullOrEmpty(registro.Nome))
+                throw new BusinessException("Dados incompletos para registrar o usuário");
+            else if (await this._usuarioRepository.ExisteAsync(this._usuarioQuery.PorUsuario(registro.Login)))
                 throw new BusinessException("Esse nome de usuário não está disponível para registro");
 
             novoUsuario.Senha = novoUsuario.Senha.ToCipherText();
