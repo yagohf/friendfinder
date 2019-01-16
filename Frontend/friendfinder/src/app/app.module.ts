@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { AmigosComponent } from './amigos/amigos.component';
 import { AcesseComponent } from './acesse/acesse.component';
 import { HomeComponent } from './home/home.component';
 import { MensagensComponent } from './mensagens/mensagens.component';
@@ -23,7 +22,6 @@ import { AppNgxbootsbundleModule } from './_ngxbundle/ngxbootstrapbundle.module'
 @NgModule({
   declarations: [
     AppComponent,
-    AmigosComponent,
     AcesseComponent,
     HomeComponent,
     MenuComponent,

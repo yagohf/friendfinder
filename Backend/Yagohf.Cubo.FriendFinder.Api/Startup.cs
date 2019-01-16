@@ -48,6 +48,9 @@ namespace Yagohf.Cubo.FriendFinder.Api
             services.AddInjectorBootstrapper(this.Configuration);
 
             //Setar configurações fortemente tipadas.
+            var parametrosSection = Configuration.GetSection("Parametros");
+            services.Configure<Parametros>(parametrosSection);
+
             var autenticacaoSection = Configuration.GetSection("Autenticacao");
             services.Configure<Autenticacao>(autenticacaoSection);
 

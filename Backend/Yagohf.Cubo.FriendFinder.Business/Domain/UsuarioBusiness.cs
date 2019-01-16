@@ -5,6 +5,7 @@ using Yagohf.Cubo.FriendFinder.Business.Interface.Helper;
 using Yagohf.Cubo.FriendFinder.Data.Interface.Query;
 using Yagohf.Cubo.FriendFinder.Data.Interface.Repository;
 using Yagohf.Cubo.FriendFinder.Infrastructure.Exception;
+using Yagohf.Cubo.FriendFinder.Infrastructure.Extensions;
 using Yagohf.Cubo.FriendFinder.Model.DTO;
 using Yagohf.Cubo.FriendFinder.Model.Entidades;
 
@@ -37,6 +38,7 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
         public async Task<UsuarioDTO> RegistrarAsync(RegistroDTO registro)
         {
             Usuario usuario = this._mapper.Map<Usuario>(registro);
+            usuario.Senha = usuario.Senha.ToCipherText();
             await this._usuarioRepository.InserirAsync(usuario);
             return this._mapper.Map<UsuarioDTO>(usuario);
         }

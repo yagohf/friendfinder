@@ -23,7 +23,7 @@ export class MensagensComponent implements OnInit {
         var this$ = this;
         setTimeout(function () {
           this$.removerMensagem(novaMsg.id);
-        }, 3000);
+        }, 5000);
       }
     });
   }

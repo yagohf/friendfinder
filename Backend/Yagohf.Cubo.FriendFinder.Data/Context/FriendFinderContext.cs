@@ -14,6 +14,7 @@ namespace Yagohf.Cubo.FriendFinder.Data.Context
         {
             modelBuilder.ApplyConfiguration(new UsuarioConfiguration());
             modelBuilder.ApplyConfiguration(new AmigoConfiguration());
+            modelBuilder.ApplyConfiguration(new CalculoHistoricoLogConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

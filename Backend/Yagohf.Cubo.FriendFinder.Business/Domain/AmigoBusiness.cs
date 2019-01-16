@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Yagohf.Cubo.FriendFinder.Business.Interface.Domain;
+using Yagohf.Cubo.FriendFinder.Business.Interface.Helper;
 using Yagohf.Cubo.FriendFinder.Data.Interface.Query;
 using Yagohf.Cubo.FriendFinder.Data.Interface.Repository;
+using Yagohf.Cubo.FriendFinder.Infrastructure.Configuration;
 using Yagohf.Cubo.FriendFinder.Infrastructure.Extensions;
 using Yagohf.Cubo.FriendFinder.Infrastructure.Paging;
 using Yagohf.Cubo.FriendFinder.Model.DTO;
@@ -15,19 +18,23 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
     public class AmigoBusiness : IAmigoBusiness
     {
         private readonly ICalculadoraDistanciaPontosBusiness _calculadoraDistanciaPontosBusiness;
+        private readonly ICalculoHistoricoLogHelper _calculoHistoricoLogHelper;
         private readonly IAmigoRepository _amigoRepository;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IAmigoQuery _amigoQuery;
         private readonly IUsuarioQuery _usuarioQuery;
+        private readonly IOptions<Parametros> _parametros;
         private readonly IMapper _mapper;
 
-        public AmigoBusiness(ICalculadoraDistanciaPontosBusiness calculadoraDistanciaPontosBusiness, IAmigoRepository amigoRepository, IUsuarioRepository usuarioRepository, IAmigoQuery amigoQuery, IUsuarioQuery usuarioQuery, IMapper mapper)
+        public AmigoBusiness(ICalculadoraDistanciaPontosBusiness calculadoraDistanciaPontosBusiness, ICalculoHistoricoLogHelper calculoHistoricoLogHelper, IAmigoRepository amigoRepository, IUsuarioRepository usuarioRepository, IAmigoQuery amigoQuery, IUsuarioQuery usuarioQuery, IOptions<Parametros> parametros, IMapper mapper)
         {
             this._calculadoraDistanciaPontosBusiness = calculadoraDistanciaPontosBusiness;
+            this._calculoHistoricoLogHelper = calculoHistoricoLogHelper;
             this._amigoRepository = amigoRepository;
             this._usuarioRepository = usuarioRepository;
             this._amigoQuery = amigoQuery;
             this._usuarioQuery = usuarioQuery;
+            this._parametros = parametros;
             this._mapper = mapper;
         }
 
@@ -40,6 +47,11 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
             return this._mapper.Map<AmigoDTO>(amigoCriar);
         }
 
+        public async Task ExcluirAsync(int id)
+        {
+            await this._amigoRepository.ExcluirAsync(id);
+        }
+
         public async Task<AmigosProximosDTO> ListarAmigosProximosPorUsuarioAsync(string usuario, int amigoReferencia)
         {
             IEnumerable<Amigo> amigos = await this._amigoRepository.ListarAsync(this._amigoQuery.PorUsuario(usuario));
@@ -50,14 +62,17 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
             {
                 amigosMaisProximos = amigos.Where(x => x.Id != amigoAtual.Id)
                     .OrderBy(x => this._calculadoraDistanciaPontosBusiness.Calcular(new PontoDTO(x.Latitude, x.Longitude), new PontoDTO(amigoAtual.Latitude, amigoAtual.Longitude)))
-                    .Take(3);
+                    .Take(this._parametros.Value.QuantidadeAmigosProximosExibir);
             }
 
-            return new AmigosProximosDTO()
+            AmigosProximosDTO resultado = new AmigosProximosDTO()
             {
                 Atual = amigoAtual == null ? null : this._mapper.Map<AmigoDTO>(amigoAtual),
                 Proximos = amigosMaisProximos?.Mapear<Amigo, AmigoDTO>(this._mapper)
             };
+
+            await this._calculoHistoricoLogHelper.Logar(usuario, resultado);
+            return resultado;
         }
 
         public async Task<Listagem<AmigoDTO>> ListarPorUsuarioAsync(string usuario, int? pagina)

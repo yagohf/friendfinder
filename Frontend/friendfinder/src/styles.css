@@ -2,3 +2,23 @@
 .dropdown-item {
     cursor: pointer;
 }
+
+/* InfoWindow do maps */
+.div-info-window {
+    min-width: 220px;
+    max-width: 220px;
+    padding-left: 20px;
+}
+
+.btn-rounded {
+    border-radius:23px;
+    width: 200px;
+}
+
+.div-info-window-acoes > button {
+    margin-bottom: 5px;
+}
+
+#txtNomeNovoAmigo {
+    margin-bottom: 5px;
+}

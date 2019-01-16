@@ -3,3 +3,26 @@
     <div id="div-mapa" #gmap></div>
   </div>
 </div>
+
+<div class="fab">
+  <span class="fab-action-button">
+    <i class="fa fa-cogs fab-action-button__icon"></i>
+  </span>
+  <ul class="fab-buttons">
+    <li class="fab-buttons__item" *ngIf="!modoInclusao">
+      <a [routerLink]="" (click)="reiniciarMapa()" class="fab-buttons__link" data-tooltip="Reiniciar mapa">
+        <i class="icon-material icon-material-fa fa fa-refresh"></i>
+      </a>
+    </li>
+    <li class="fab-buttons__item" *ngIf="!modoInclusao">
+      <a [routerLink]="" (click)="abrirModoInclusaoAmigo()" class="fab-buttons__link" data-tooltip="Adicionar amigo">
+        <i class="icon-material icon-material-fa fa fa-user-plus"></i>
+      </a>
+    </li>
+    <li class="fab-buttons__item" *ngIf="modoInclusao">
+      <a [routerLink]="" (click)="cancelarModoInclusaoAmigo()" class="fab-buttons__link" data-tooltip="Cancelar inclusão">
+        <i class="icon-material icon-material-fa fa fa-times"></i>
+      </a>
+    </li>
+  </ul>
+</div>

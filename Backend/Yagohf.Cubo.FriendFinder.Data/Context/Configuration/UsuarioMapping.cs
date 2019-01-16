@@ -32,6 +32,10 @@ namespace Yagohf.Cubo.FriendFinder.Data.Context.Configuration
             builder.HasMany(x => x.Amigos)
                 .WithOne(x => x.Usuario)
                 .HasForeignKey(x => x.IdUsuario);
+
+            builder.HasMany(x => x.CalculoHistoricoLogs)
+                .WithOne(x => x.Usuario)
+                .HasForeignKey(x => x.IdUsuario);
         }
     }
 }

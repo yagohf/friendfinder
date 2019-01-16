@@ -12,7 +12,6 @@ using Yagohf.Cubo.FriendFinder.Data.Interface.Query;
 using Yagohf.Cubo.FriendFinder.Data.Interface.Repository;
 using Yagohf.Cubo.FriendFinder.Data.Query;
 using Yagohf.Cubo.FriendFinder.Data.Repository;
-using Yagohf.Cubo.FriendFinder.Infrastructure.Configuration;
 
 namespace Yagohf.Cubo.FriendFinder.Injector
 {
@@ -31,6 +30,7 @@ namespace Yagohf.Cubo.FriendFinder.Injector
             //Data - Repository
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IAmigoRepository, AmigoRepository>();
+            services.AddScoped<ICalculoHistoricoLogRepository, CalculoHistoricoLogRepository>();
 
             //Data - Query
             services.AddScoped<IUsuarioQuery, UsuarioQuery>();
@@ -38,6 +38,7 @@ namespace Yagohf.Cubo.FriendFinder.Injector
 
             //Business - Helper
             services.AddScoped<ITokenHelper, TokenHelper>();
+            services.AddScoped<ICalculoHistoricoLogHelper, CalculoHistoricoLogHelper>();
 
             //Business - Domain
             services.AddScoped<IUsuarioBusiness, UsuarioBusiness>();

@@ -10,5 +10,6 @@ namespace Yagohf.Cubo.FriendFinder.Business.Interface.Domain
         Task<AmigosProximosDTO> ListarAmigosProximosPorUsuarioAsync(string usuario, int amigoReferencia);
         Task<Listagem<AmigoDTO>> ListarPorUsuarioAsync(string usuario, int? pagina);
         Task<AmigoDTO> SelecionarPorIdAsync(int id);
+        Task ExcluirAsync(int id);
     }
 }

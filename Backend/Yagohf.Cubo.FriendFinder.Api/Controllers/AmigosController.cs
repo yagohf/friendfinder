@@ -68,5 +68,18 @@ namespace Yagohf.Cubo.FriendFinder.Api.Controllers
             AmigoDTO amigoCriado = await this._amigoBusiness.CriarAsync(this.ObterUsuarioLogado(), model);
             return CreatedAtAction(nameof(Get), new { id = amigoCriado.Id }, amigoCriado);
         }
+
+        /// <summary>
+        /// Exclui um amigo do usuário logado através de seu identificador único.
+        /// </summary>
+        /// <param name="id">Identificador único do amigo.</param>
+        [HttpDelete("{id}")]
+        [SwaggerResponse(200)]
+        [SwaggerResponse(400)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await this._amigoBusiness.ExcluirAsync(id);
+            return Ok();
+        }
     }
 }

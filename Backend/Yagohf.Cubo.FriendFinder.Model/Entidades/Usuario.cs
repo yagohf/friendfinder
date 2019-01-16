@@ -10,5 +10,6 @@ namespace Yagohf.Cubo.FriendFinder.Model.Entidades
 
         //Relacionamentos.
         public ICollection<Amigo> Amigos { get; set; }
+        public ICollection<CalculoHistoricoLog> CalculoHistoricoLogs { get; set; }
     }
 }
