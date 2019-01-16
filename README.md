@@ -14,4 +14,4 @@ Esse projeto consiste em uma aplicação para que seja possível organizar visit
 - Substituir a API Key do Google Maps no arquivo [index.html](./Frontend/friendfinder/src/index.html) por uma Key válida. Para obter uma key [siga essas instruções](https://developers.google.com/maps/documentation/javascript/get-api-key).
 
 ## Demonstração
-- Essa aplicação foi publicada na AWS para fins de demonstração. O endereço é XXX. Utilizar o usuário **cubo** e a senha **123mudar**.
+- Essa aplicação foi publicada na AWS para fins de demonstração. [Clique aqui para acessar](http://friendfinder-frontend.s3-website-us-east-1.amazonaws.com). Utilizar o usuário **cubo** e a senha **123mudar**.
