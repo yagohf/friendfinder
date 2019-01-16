@@ -11,6 +11,7 @@ Esse projeto consiste em uma aplicação para que seja possível organizar visit
 ## Ajustes necessários para executar o projeto
 - Substituir a connection string no arquivo [appsettings.Development.json](./Backend/Yagohf.Cubo.FriendFinder.Api/appsettings.Development.json) pela conexão do seu banco de dados. Caso queira publicar a aplicação, é necessário alterar essas mesmas informações no arquivo [appsettings.json](./Backend/Yagohf.Cubo.FriendFinder.Api/appsettings.json).
 - Substituir a URL da API no arquivo [environment.ts](./Frontend/friendfinder/src/environments/environment.ts) pela URL em que sua API encontra-se rodando.
+- Substituir a API Key do Google Maps no arquivo [index.html](./Frontend/friendfinder/src/index.html) por uma Key válida. Para obter uma key [siga essas instruções](https://developers.google.com/maps/documentation/javascript/get-api-key).
 
 ## Demonstração
 - Essa aplicação foi publicada na AWS para fins de demonstração. O endereço é XXX. Utilizar o usuário **cubo** e a senha **123mudar**.
