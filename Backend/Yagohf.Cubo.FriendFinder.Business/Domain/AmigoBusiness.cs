@@ -8,6 +8,7 @@ using Yagohf.Cubo.FriendFinder.Business.Interface.Helper;
 using Yagohf.Cubo.FriendFinder.Data.Interface.Query;
 using Yagohf.Cubo.FriendFinder.Data.Interface.Repository;
 using Yagohf.Cubo.FriendFinder.Infrastructure.Configuration;
+using Yagohf.Cubo.FriendFinder.Infrastructure.Exception;
 using Yagohf.Cubo.FriendFinder.Infrastructure.Extensions;
 using Yagohf.Cubo.FriendFinder.Infrastructure.Paging;
 using Yagohf.Cubo.FriendFinder.Model.DTO;
@@ -42,13 +43,24 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
         {
             Usuario usuarioRelacionar = await this._usuarioRepository.SelecionarUnicoAsync(this._usuarioQuery.PorUsuario(usuario));
             Amigo amigoCriar = this._mapper.Map<Amigo>(amigo);
+            if (string.IsNullOrEmpty(amigoCriar.Nome))
+                throw new BusinessException("Nome inválido");
+
+            IEnumerable<Amigo> amigosUsuario = await this._amigoRepository.ListarAsync(this._amigoQuery.PorUsuario(usuario));
+            if (amigosUsuario.Any(x => x.Latitude == amigoCriar.Latitude && x.Longitude == amigoCriar.Longitude))
+                throw new BusinessException("Já existe um amigo cadastrado com essa latitude e longitude");
+
             amigoCriar.IdUsuario = usuarioRelacionar.Id;
             await this._amigoRepository.InserirAsync(amigoCriar);
             return this._mapper.Map<AmigoDTO>(amigoCriar);
         }
 
-        public async Task ExcluirAsync(int id)
+        public async Task ExcluirAsync(string usuario, int id)
         {
+            IEnumerable<Amigo> amigos = await this._amigoRepository.ListarAsync(this._amigoQuery.PorUsuario(usuario));
+            if (!amigos.Any(x => x.Id == id))
+                throw new BusinessException("O usuário não tem permissão para excluir esse amigo");
+
             await this._amigoRepository.ExcluirAsync(id);
         }
 

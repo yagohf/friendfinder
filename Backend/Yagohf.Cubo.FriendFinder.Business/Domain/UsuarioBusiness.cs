@@ -28,19 +28,25 @@ namespace Yagohf.Cubo.FriendFinder.Business.Domain
 
         public async Task<TokenDTO> GerarToken(AutenticacaoDTO login)
         {
-            Usuario usuarioExistente = await this._usuarioRepository.SelecionarUnicoAsync(this._usuarioQuery.PorUsuarioSenha(login.Login, login.Senha));
-            if (usuarioExistente == null)
+            if (string.IsNullOrEmpty(login.Login) || string.IsNullOrEmpty(login.Senha))
                 throw new BusinessException("Usuário ou senha inválidos");
 
-            return this._tokenHelper.Gerar(usuarioExistente.Login, usuarioExistente.Nome);
+            Usuario usuario = await this._usuarioRepository.SelecionarUnicoAsync(this._usuarioQuery.PorUsuarioSenha(login.Login, login.Senha));
+            if (usuario == null)
+                throw new BusinessException("Usuário ou senha inválidos");
+
+            return this._tokenHelper.Gerar(usuario.Login, usuario.Nome);
         }
 
         public async Task<UsuarioDTO> RegistrarAsync(RegistroDTO registro)
         {
-            Usuario usuario = this._mapper.Map<Usuario>(registro);
-            usuario.Senha = usuario.Senha.ToCipherText();
-            await this._usuarioRepository.InserirAsync(usuario);
-            return this._mapper.Map<UsuarioDTO>(usuario);
+            Usuario novoUsuario = this._mapper.Map<Usuario>(registro);
+            if (await this._usuarioRepository.ExisteAsync(this._usuarioQuery.PorUsuario(registro.Login)))
+                throw new BusinessException("Esse nome de usuário não está disponível para registro");
+
+            novoUsuario.Senha = novoUsuario.Senha.ToCipherText();
+            await this._usuarioRepository.InserirAsync(novoUsuario);
+            return this._mapper.Map<UsuarioDTO>(novoUsuario);
         }
 
         public async Task<UsuarioDTO> SelecionarPorIdAsync(int id)

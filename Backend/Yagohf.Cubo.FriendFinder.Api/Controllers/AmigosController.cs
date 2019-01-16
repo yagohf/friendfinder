@@ -45,9 +45,9 @@ namespace Yagohf.Cubo.FriendFinder.Api.Controllers
         }
 
         /// <summary>
-        /// Consulta os amigos mais próximos da localização do amigo em que o usuário logado se encontra.
+        /// Consulta os amigos mais próximos da localização de um determinado amigo do usuário logado.
         /// </summary>
-        /// <param name="amigo">Identificador único do amigo em que o usuário logado se encontra.</param>
+        /// <param name="amigo">Identificador único do amigo para localizar outros amigos próximos.</param>
         [HttpGet("{amigo}/proximos")]
         [SwaggerResponse(200, typeof(AmigosProximosDTO))]
         [SwaggerResponse(401)]
@@ -78,7 +78,7 @@ namespace Yagohf.Cubo.FriendFinder.Api.Controllers
         [SwaggerResponse(400)]
         public async Task<IActionResult> Delete(int id)
         {
-            await this._amigoBusiness.ExcluirAsync(id);
+            await this._amigoBusiness.ExcluirAsync(this.ObterUsuarioLogado(), id);
             return Ok();
         }
     }
